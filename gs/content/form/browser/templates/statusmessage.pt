@@ -1,0 +1,24 @@
+<tal:block condition="view/status"
+  define="e view/errors;
+    mc string:ui-state-highlight ui-corner-all;
+    ec string:ui-widget ui-state-error ui-corner-all;">
+  <div id="form-message"
+    tal:attributes="class python:e and ec or mc">
+    <div class="form-status">
+      <span tal:define="mc string:ui-icon ui-icon-info;
+        ec string:ui-icon ui-icon-alert;"
+        tal:attributes="class python:e and ec or mc">&#160;</span>
+      <tal:block content="structure view/status">The text</tal:block>
+    </div>
+    <dl tal:condition="view/errors">
+      <tal:block repeat="widget view/widgets">
+        <tal:block tal:condition="widget/error">
+          <dt tal:content="widget/label">Widget Name</dt>
+          <dd class="error" 
+            tal:content="structure widget/error">Error message</dd>
+        </tal:block>
+      </tal:block>
+    </dl>
+  </div><!--form-message-->
+</tal:block>
+

@@ -3,5 +3,17 @@
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
-    
+
+  <interface 
+    interface=".interfaces.IFormStatus"
+    type="zope.contentprovider.interfaces.ITALNamespaceData"/>
+  <class class=".statusmessage.StatusMessage">
+    <implements interface=".interfaces.IFormStatus"/>
+  </class>
+  <adapter
+    for="zope.interface.Interface zope.publisher.interfaces.browser.IDefaultBrowserLayer zope.interface.Interface"
+    factory=".statusmessage.StatusMessage"
+    provides="zope.contentprovider.interfaces.IContentProvider"
+    name="groupserver.FormStatusMessage"/>
+
 </configure>
