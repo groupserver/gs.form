@@ -14,7 +14,7 @@ from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.widget import renderElement
 
 class NotBrokenRadioWidget(RadioWidget):
-    _joinButtonToMessageTemplate = u'%s&nbsp;%s\n'
+    _joinButtonToMessageTemplate = u'<div class="radioItem">%s&nbsp;%s</div>\n'
     def renderItem(self, index, text, value, name, cssClass):
         widgetId = '%s.%s' % (name, index)
         elem = renderElement(u'input',
