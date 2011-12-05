@@ -1,5 +1,6 @@
 # coding=utf-8
 from zope.component import createObject
+from zope.cachedescriptors.property import Lazy
 try:
     from five.formlib.formbase import PageForm
 except ImportError:
@@ -10,10 +11,13 @@ class SiteForm(PageForm):
         PageForm.__init__(self, context, request)
         self.__siteInfo = None
 
-    @property
+    @Lazy
     def siteInfo(self):
-        if self.__siteInfo == None:
-            self.__siteInfo = \
-                createObject('groupserver.SiteInfo', self.context)
-        return self.__siteInfo
+        retval = createObject('groupserver.SiteInfo', self.context)
+        return retval
+        
+    @Lazy
+    def loggedInUser(self):
+        retval = createObject('groupserver.LoggedInUser', self.context)
+        return retval
 
