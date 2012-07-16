@@ -1,29 +1,13 @@
 Introduction
 ============
 
-This product contains many useful functions and classes for dealing with
-``zope.formlib`` forms [#formlib]_ in `GroupServer`_.
+This product contains the core functions and classes for dealing with forms
+in `GroupServer`_. For the most part it consists of the
+``gs.form.post_multipart`` utility, for posting data for a form (see
+`post_multipart`_ below).
 
-``gs.content.form.SiteForm``:
-  An abstract base-class for a that provides the ``siteInfo`` and
-  ``loggedInUser`` properties.
-
-``groupserver.FormStatusMessage``:
-  A *content provider* for displaying the status-message of a form, after
-  it submits.
-
-``gs.content.form.radio_widget``:
-  A factory for creating a non-broken radio-widget.
-
-``gs.content.form.select_widget``:
-  A factory for creating a select-widget that is slightly larger than the
-  normal widget (15 items).
-
-``gs.content.form.disabled_text_widget``:
-  A factory for creating text widget that is always disabled.
-
-``gs.content.form.post_multipart``:
-  A utility for posting data for a form (see `post_multipart`_ below).
+The ``gs.content.form`` module supplies the handling for the
+user-interface [#contentForm]_.
 
 ``post_multipart``
 ==================
@@ -62,5 +46,6 @@ Returns
 
 A 3-tuple of ``status, reason, data``.
 
-.. [#formlib] See <http://docs.zope.org/zope.formlib/>
+.. [#contentForm] See 
+                  <https://source.iopen.net/groupserver/gs.content.form/summary>
 .. _GroupServer: http://groupserver.org/
