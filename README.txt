@@ -38,6 +38,9 @@ Arguments
 
   * A list (or tuple) of 2-tuples of the form ``('formField', value)``.
 
+  The **submit button** is also passed through as a field. Normally the
+  ``value`` is set to the label of the button.
+
 ``files``:
   An optional list of files as 3-tuples: ``('formField', fileName, fileData)``.
 
