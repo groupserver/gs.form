@@ -5,9 +5,9 @@ from version import get_version
 
 version = get_version()
 
-setup(name='gs.content.form',
+setup(name='gs.form',
     version=version,
-    description="Enhancements to the Zope formlib widgets.",
+    description="Core form support in GroupServer.",
     long_description=open("README.txt").read() + "\n" +
                       open(os.path.join("docs", "HISTORY.txt")).read(),
     classifiers=[
@@ -27,7 +27,7 @@ setup(name='gs.content.form',
     url='http://onlinegroups.net/',
     license='other',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['gs', 'gs.content'],
+    namespace_packages=['gs'],
     include_package_data=True,
     zip_safe=True,
     install_requires=[
