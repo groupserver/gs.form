@@ -3,6 +3,8 @@
 <http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/>.
 '''
 import httplib, mimetypes
+import mimetools
+from cStringIO import StringIO
 
 def post_multipart(host, selector, fields, files=[]):
     """
@@ -35,26 +37,25 @@ def encode_multipart_formdata(fields, files):
     uploaded as files Return (content_type, body) ready for httplib.HTTP
     instance
     """
-    BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
-    CRLF = '\r\n'
-    L = []
+    boundary = mimetools.choose_boundary()
+    buffer = StringIO()
     for (key, value) in fields:
-        L.append('--' + BOUNDARY)
-        L.append('Content-Disposition: form-data; name="%s"' % key)
-        L.append('')
-        L.append(value)
+        buffer.write('--%s\r\n' % boundary)
+        buffer.write('Content-Disposition: form-data; name="%s"' % key)
+        buffer.write('\r\n\r\n' + value + '\r\n')
     for (key, filename, value) in files:
-        L.append('--' + BOUNDARY)
-        L.append('Content-Disposition: form-data; name="%s"; '\
-                     'filename="%s"' % (key, filename))
-        L.append('Content-Type: %s' % get_content_type(filename))
-        L.append('')
-        L.append(value)
-    L.append('--' + BOUNDARY + '--')
-    L.append('')
-    body = CRLF.join(L)
-    content_type = 'multipart/form-data; boundary=%s' % BOUNDARY
-    return content_type, body
+        buffer.write('--%s\r\n' % boundary)
+        buffer.write('Content-Disposition: form-data; name="%s"; '\
+                     'filename="%s"\r\n' % (key, filename))
+        buffer.write('Content-Type: %s\r\n' % get_content_type(filename))
+        buffer.write('\r\n%s\r\n' % value)
+
+    buffer.write('--%s--\r\n\r\n' % boundary)
+    buffer = buffer.getvalue()
+
+    content_type = 'multipart/form-data; boundary=%s' % boundary
+
+    return content_type, buffer
 
 def get_content_type(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
