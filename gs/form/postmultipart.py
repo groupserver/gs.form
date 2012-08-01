@@ -6,7 +6,7 @@ import httplib, mimetypes
 import mimetools
 from cStringIO import StringIO
 
-def post_multipart(host, selector, fields, files=[]):
+def post_multipart(host, selector, fields, files=[], usessl=False):
     """
     Post fields and files to an http host as multipart/form-data.  fields
     is a sequence of (name, value) elements for regular form fields.  files
@@ -21,7 +21,12 @@ def post_multipart(host, selector, fields, files=[]):
         'not "%s".' % type(fields)
 
     content_type, body = encode_multipart_formdata(f, files)
-    h = httplib.HTTPConnection(host)
+    if usessl:
+        connectionFactory = httplib.HTTPSConnection
+    else:
+        connectionFactory = httplib.HTTPConnection
+
+    h = connectionFactory(host)
     headers = {
         'User-Agent': 'noddy post it',
         'Content-Type': content_type
