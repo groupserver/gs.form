@@ -1,10 +1,12 @@
-# coding=utf-8
-'''Post multipart form-data to a zope.formlib form. Originally from
-<http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/>.
-'''
-import httplib, mimetypes
-import mimetools
+# -*- coding: utf-8 -*-
+# Post multipart form-data to a zope.formlib form. Originally from
+# <http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/>
+
 from cStringIO import StringIO
+import httplib
+import mimetools
+import mimetypes
+
 
 def post_multipart(host, selector, fields, files=[], usessl=False):
     """
@@ -35,6 +37,7 @@ def post_multipart(host, selector, fields, files=[], usessl=False):
     res = h.getresponse()
     return res.status, res.reason, res.read()
 
+
 def encode_multipart_formdata(fields, files):
     """
     fields is a sequence of (name, value) elements for regular form fields.
@@ -43,24 +46,25 @@ def encode_multipart_formdata(fields, files):
     instance
     """
     boundary = mimetools.choose_boundary()
-    buffer = StringIO()
+    buf = StringIO()
     for (key, value) in fields:
-        buffer.write('--%s\r\n' % boundary)
-        buffer.write('Content-Disposition: form-data; name="%s"' % key)
-        buffer.write('\r\n\r\n' + value + '\r\n')
+        buf.write('--%s\r\n' % boundary)
+        buf.write('Content-Disposition: form-data; name="%s"' % key)
+        buf.write('\r\n\r\n' + value + '\r\n')
     for (key, filename, value) in files:
-        buffer.write('--%s\r\n' % boundary)
-        buffer.write('Content-Disposition: form-data; name="%s"; '\
+        buf.write('--%s\r\n' % boundary)
+        buf.write('Content-Disposition: form-data; name="%s"; '
                      'filename="%s"\r\n' % (key, filename))
-        buffer.write('Content-Type: %s\r\n' % get_content_type(filename))
-        buffer.write('\r\n%s\r\n' % value)
+        buf.write('Content-Type: %s\r\n' % get_content_type(filename))
+        buf.write('\r\n%s\r\n' % value)
 
-    buffer.write('--%s--\r\n\r\n' % boundary)
-    buffer = buffer.getvalue()
+    buf.write('--%s--\r\n\r\n' % boundary)
+    buf = buf.getvalue()
 
     content_type = 'multipart/form-data; boundary=%s' % boundary
 
-    return content_type, buffer
+    return content_type, buf
+
 
 def get_content_type(filename):
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
