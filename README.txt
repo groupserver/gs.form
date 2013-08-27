@@ -1,10 +1,24 @@
+===========
+``gs.form``
+===========
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Core form handling for GroupServer
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Author: `Michael JasonSmith`_
+:Contact: Michael JasonSmith <mpj17@onlinegroups.net>
+:Date: 2013-08-27
+:Organization: `GroupServer.org`_
+:Copyright: This document is licensed under a
+  `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
+  by `OnlineGroups.Net`_.
+
 Introduction
 ============
 
 This product contains the core functions and classes for dealing with forms
-in `GroupServer`_. For the most part it consists of the
-``gs.form.post_multipart`` utility, for posting data for a form (see
-`post_multipart`_ below).
+in GroupServer_. For the most part it consists of the post_multipart_
+utility, for posting data to a form.
 
 The ``gs.content.form`` module supplies the handling for the
 user-interface [#contentForm]_.
@@ -20,7 +34,7 @@ Synopsis
 
 ::
 
-  post_multipart(host, selector, fields, files=[])
+  post_multipart(host, selector, fields, files=[], usessl=False)
 
 Arguments
 ---------
@@ -44,11 +58,35 @@ Arguments
 ``files``:
   An optional list of files as 3-tuples: ``('formField', fileName, fileData)``.
 
+``usessl``:
+  Whether to use SSL to communicate to the server.
+
 Returns
 -------
 
 A 3-tuple of ``status, reason, data``.
 
+Acknowledgements
+================
+
+The post_multipart_ code was based on `a Python recipe by Wade Leftwich`_.
+
+
+Resources
+=========
+
+- Code repository: https://source.iopen.net/groupserver/gs.form
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
+.. _GroupServer: http://groupserver.org/
+.. _GroupServer.org: http://groupserver.org/
+.. _OnlineGroups.Net: https://onlinegroups.net
+.. _Michael JasonSmith: http://groupserver.org/p/mpj17
+.. _Creative Commons Attribution-Share Alike 3.0 New Zealand License:
+   http://creativecommons.org/licenses/by-sa/3.0/nz/
+.. _a Python recipe by Wade Leftwich: http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/
+
 .. [#contentForm] See 
                   <https://source.iopen.net/groupserver/gs.content.form/summary>
-.. _GroupServer: http://groupserver.org/
+
