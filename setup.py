@@ -17,6 +17,7 @@ from setuptools import setup, find_packages
 from version import get_version
 
 version = get_version()
+# TODO: Requirements dance for mock, which is shipped in Python 3.4+
 
 setup(name='gs.form',
     version=version,

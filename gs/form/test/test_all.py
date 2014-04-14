@@ -16,8 +16,9 @@ from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
 from gs.form.test.contenttype import TestContentType
 from gs.form.test.encode import TestEncode
+from gs.form.test.post import TestPostMultipart
 
-testCases = (TestContentType, TestEncode, )
+testCases = (TestContentType, TestEncode, TestPostMultipart, )
 
 def load_tests(loader, tests, pattern):
     suite = TestSuite()
