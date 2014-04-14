@@ -18,7 +18,7 @@ from gs.form.postmultipart import get_content_type
 
 
 class TestContentType(TestCase):
-    '''Test all of gs.form'''
+    '''Test the content-type guesser component of gs.form'''
 
     def content_type_test(self, filename, expectedType):
         '''Test that a file name is of an expected type'''
