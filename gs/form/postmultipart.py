@@ -19,33 +19,51 @@ import mimetools
 import mimetypes
 
 
+class Connection(object):
+    '''A wrapper for the HTTP(S) connection'''
+    def __init__(self, host, port=None, usessl=False):  # Port?
+        if usessl:
+            self.connectionFactory = httplib.HTTPSConnection
+        else:
+            self.connectionFactory = httplib.HTTPConnection            
+        self.host = self.connectionFactory(host)  # Port?
+
+    def request(self, requestType, selector, body, headers):
+        self.host.request(requestType, selector, body, headers)
+        
+    def getresponse(self):
+        retval = self.host.getresponse()
+        return retval
+
+
 def post_multipart(host, selector, fields, files=[], usessl=False):
     """
-    Post fields and files to an http host as multipart/form-data.  fields
-    is a sequence of (name, value) elements for regular form fields.  files
-    is a sequence of (name, filename, value) elements for data to be
-    uploaded as files Return the server's response page.
+    Post fields and files to an http host as multipart/form-data.  
+
+    Arguments
+    ``fields``: a sequence of (name, value) elements for regular form fields.  
+    ``files``:  a sequence of (name, filename, value) elements for data to be
+                uploaded as files 
+
+    Returns the server's response page.
     """
     if type(fields) == dict:
         f = fields.items()
     else:
         f = fields
-    assert type(f) in (list, tuple), 'Fields must be a dict, tuple, or list, '\
-        'not "%s".' % type(fields)
+    if type(f) not in (list, tuple):
+        m = 'Fields must be a dict, tuple, or list, not "{0}".'
+        msg = m.format(type(fields))
+        raise ValueError(msg)
 
+    connection = Connection(host, usessl=usessl)
     content_type, body = encode_multipart_formdata(f, files)
-    if usessl:
-        connectionFactory = httplib.HTTPSConnection
-    else:
-        connectionFactory = httplib.HTTPConnection
-
-    h = connectionFactory(host)
     headers = {
-        'User-Agent': 'noddy post it',
+        'User-Agent': 'gs.form',
         'Content-Type': content_type
         }
-    h.request('POST', selector, body, headers)
-    res = h.getresponse()
+    connection.request('POST', selector, body, headers)
+    res = connection.getresponse()
     return res.status, res.reason, res.read()
 
 
