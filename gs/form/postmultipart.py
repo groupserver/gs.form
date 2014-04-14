@@ -13,7 +13,7 @@
 #
 ##############################################################################
 from __future__ import unicode_literals
-from cStringIO import StringIO
+from io import StringIO
 import httplib
 import mimetools
 import mimetypes
