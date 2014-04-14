@@ -13,11 +13,19 @@
 #
 ##############################################################################
 import os
+import sys
 from setuptools import setup, find_packages
 from version import get_version
 
 version = get_version()
-# TODO: Requirements dance for mock, which is shipped in Python 3.4+
+
+# The requirements dance
+requires = [] # --=mpj17=-- Actually the complete set of deps for 3.4+
+if ((sys.version_info < (3, 4)):
+    requires = [
+        'setuptools',
+        'mock'
+        ]
 
 setup(name='gs.form',
     version=version,
@@ -44,9 +52,7 @@ setup(name='gs.form',
     namespace_packages=['gs'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[
-        'setuptools',  # --=mpj17=-- Actually the complete set of egg deps
-    ],
+    install_requires=requires,
     entry_points="""
     # -*- Entry points: -*-
     """,)
