@@ -1,41 +1,30 @@
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 from __future__ import absolute_import, unicode_literals
-from unittest import TestCase, main as unittest_main
-from mock import MagicMock
-from gs.form.postmultipart import (get_content_type, encode_multipart_formdata,
-                                   post_multipart)
+from unittest import TestSuite, main as unittest_main
+from gs.form.test.contenttype import TestContentType
+from gs.form.test.encode import TestEncode
 
-class TestGSForm(TestCase):
-    '''Test all of gs.form'''
+testCases = (TestContentType, TestEncode, )
 
-    def content_type_test(self, filename, expectedType):
-        '''Test that a file name is of an expected type'''
-        ct = get_content_type(filename)
-        self.assertEqual(ct, expectedType)
-
-    def test_get_content_type_txt(self):
-        '''Test the function that guesses the content type of a text file.'''
-        self.content_type_test('foo.txt', 'text/plain')
-
-    def test_get_content_type_jpg(self):
-        '''Test the function that guesses the content type of a JPEG file.'''
-        self.content_type_test('foo.jpg', 'image/jpeg')
-
-    def test_get_content_type_mpg(self):
-        '''Test the function that guesses the content type of a MPEG file.'''
-        self.content_type_test('foo.mpg', 'video/mpeg')
-
-    def test_get_content_type_bar(self):
-        '''Test the function that guesses the content type of a odd file.'''
-        self.content_type_test('foo.bar', 'application/octet-stream')
-
-    def test_encode_multipart_form_data(self):
-        '''Test the function that encodes the data.'''
-        self.assertTrue(True)
-
-    def test_post_multipart(self):
-        '''Test the main post_multipart function'''
-        self.assertTrue(True)
-    
+def load_tests(loader, tests, pattern):
+    suite = TestSuite()
+    for testClass in testCases:
+        tests = loader.loadTestsFromTestCase(testClass)
+        suite.addTests(tests)
+    return suite
 
 if __name__ == '__main__':
     unittest_main()
