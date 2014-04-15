@@ -81,8 +81,8 @@ def encode_multipart_formdata(fields, files):
     container = MIMEMultipart('form-data')
     for (key, value) in fields:
         part = MIMENonMultipart('foo', 'bar')
-        k = Header(key)
-        part['Content-Disposition'] = 'form-data; name="{0}"'.format(k)
+        part['Content-Disposition'] = Header('form-data').encode()
+        part.set_param('name', key, 'Content-Disposition')
         data = to_unicode_or_bust(value).encode(UTF8)
         part.set_payload(data)
         del(part['Content-Type'])
@@ -90,11 +90,10 @@ def encode_multipart_formdata(fields, files):
         container.attach(part)
     for (key, filename, value) in files:
         part = MIMENonMultipart('foo', 'bar')
-        k = Header(key)
-        f = Header(filename)
-        cd = 'form-data; name="{0}"; filename="{1}"'.format(k, f)
-        part['Content-Disposition'] = cd
-        part['Content-Type'] = get_content_type(filename)
+        part['Content-Disposition'] = Header('form-data').encode()
+        part.set_param('name', key, 'Content-Disposition')
+        part.set_param('filename', filename, 'Content-Disposition')
+        part['Content-Type'] = Header(get_content_type(filename)).encode()
         part.set_payload(value)
         del(part['Content-Type'])
         del(part['MIME-Version'])
