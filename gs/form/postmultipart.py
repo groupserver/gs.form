@@ -20,6 +20,8 @@ from gs.core import to_ascii, to_unicode_or_bust
 from .httplib import HTTPSConnection, HTTPConnection
 UTF8 = 'utf-8'
 
+print ('\n\n\nHere!!!\n\n\n')
+
 
 class Connection(object):
     '''A wrapper for the HTTP(S) connection'''
