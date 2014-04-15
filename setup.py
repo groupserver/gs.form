@@ -20,11 +20,12 @@ from version import get_version
 version = get_version()
 
 # The requirements dance
-requires = []  # --=mpj17=-- Actually the complete set of deps for 3.4+
+requires = ['gs.core']
 if (sys.version_info < (3, 4)):
     requires = [
         'setuptools',
-        'mock'
+        'mock',
+        'gs.core'
         ]
 
 setup(name='gs.form',
@@ -35,12 +36,15 @@ setup(name='gs.form',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         "Environment :: Web Environment",
-        "Framework :: Zope2",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: Zope Public License',
         "Natural Language :: English",
-        "Operating System :: POSIX :: Linux"
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
       ],
     keywords='zope form formlib zope.formlib post',
