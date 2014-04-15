@@ -13,12 +13,13 @@
 #
 ##############################################################################
 from __future__ import absolute_import, unicode_literals
-import httplib
 from mock import MagicMock
 from types import TupleType
 from unittest import TestCase
 from gs.form.postmultipart import post_multipart, Connection
-from gs.form.postmultipart import httplib as ph
+from gs.form.postmultipart import (HTTPSConnection as ph_HTTPSConnection,
+    HTTPConnection as ph_HTTPConnection)
+from gs.form.httplib import HTTPSConnection, HTTPConnection
 
 
 class FauxResponse(TupleType):
@@ -34,32 +35,34 @@ class FauxResponse(TupleType):
     def read(self):
         return self[2]
 
+
 class TestPostMultipart(TestCase):
     '''Test the post_multipart function of gs.form'''
-    fauxResponse = FauxResponse(('200', 'Mock', 
+    fauxResponse = FauxResponse(('200', 'Mock',
                                  'He has joined the choir invisible'))
     fields = [('parrot', 'dead'), ('piranha', 'brother'),
               ('ethyl', 'frog')]
-    files = [('unwritten', 'rule.txt', 'This is a transgression.'), 
+    files = [('unwritten', 'rule.txt', 'This is a transgression.'),
              ('toad', 'sprocket.jpg', 'Tonight we look at violence.')]
 
-
     def setUp(self):
-        ph.HTTPConnection.getresponse = MagicMock(return_value=self.fauxResponse)
-        ph.HTTPConnection.request = MagicMock()
+        ph_HTTPConnection.getresponse = \
+             MagicMock(return_value=self.fauxResponse)
+        ph_HTTPConnection.request = MagicMock()
 
-        ph.HTTPSConnection.getresponse = MagicMock(return_value=self.fauxResponse)
-        ph.HTTPSConnection.request = MagicMock()
-        
+        ph_HTTPSConnection.getresponse = \
+            MagicMock(return_value=self.fauxResponse)
+        ph_HTTPSConnection.request = MagicMock()
+
     def test_connection(self):
         connection = Connection('example.com')
-        self.assertIsInstance(connection.host, httplib.HTTPConnection)
+        self.assertIsInstance(connection.host, HTTPConnection)
 
     def test_tls_connection(self):
         tlsConnection = Connection('example.com', usessl=True)
-        self.assertIsInstance(tlsConnection.host, httplib.HTTPSConnection)
+        self.assertIsInstance(tlsConnection.host, HTTPSConnection)
 
-    def test_post_multipart_resp_status(self):
+    def test_post_multipart_resp(self):
         retval = post_multipart('example.com', 'form.html', self.fields)
         self.assertEqual(len(retval), len(self.fauxResponse))
 
