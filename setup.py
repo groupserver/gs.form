@@ -20,8 +20,8 @@ from version import get_version
 version = get_version()
 
 # The requirements dance
-requires = [] # --=mpj17=-- Actually the complete set of deps for 3.4+
-if ((sys.version_info < (3, 4)):
+requires = []  # --=mpj17=-- Actually the complete set of deps for 3.4+
+if (sys.version_info < (3, 4)):
     requires = [
         'setuptools',
         'mock'
