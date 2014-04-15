@@ -15,8 +15,9 @@
 from __future__ import absolute_import, unicode_literals
 from email.mime.multipart import MIMEMultipart
 from email.mime.nonmultipart import MIMENonMultipart
+from email.header import Header
 import mimetypes
-from gs.core import to_ascii, to_unicode_or_bust
+from gs.core import to_unicode_or_bust
 from .httplib import HTTPSConnection, HTTPConnection
 UTF8 = 'utf-8'
 
@@ -80,8 +81,8 @@ def encode_multipart_formdata(fields, files):
     container = MIMEMultipart('form-data')
     for (key, value) in fields:
         part = MIMENonMultipart('foo', 'bar')
-        k = to_ascii(key)
-        part['Content-Disposition'] = b'form-data; name="{0}"'.format(k)
+        k = Header(key)
+        part['Content-Disposition'] = 'form-data; name="{0}"'.format(k)
         data = to_unicode_or_bust(value).encode(UTF8)
         part.set_payload(data)
         del(part['Content-Type'])
@@ -89,9 +90,9 @@ def encode_multipart_formdata(fields, files):
         container.attach(part)
     for (key, filename, value) in files:
         part = MIMENonMultipart('foo', 'bar')
-        k = to_ascii(key)
-        f = to_ascii(filename)
-        cd = b'form-data; name="{0}"; filename="{1}"'.format(k, f)
+        k = Header(key)
+        f = Header(filename)
+        cd = 'form-data; name="{0}"; filename="{1}"'.format(k, f)
         part['Content-Disposition'] = cd
         part['Content-Type'] = get_content_type(filename)
         part.set_payload(value)
@@ -106,4 +107,4 @@ def encode_multipart_formdata(fields, files):
 
 
 def get_content_type(filename):
-    return mimetypes.guess_type(filename)[0] or b'application/octet-stream'
+    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'

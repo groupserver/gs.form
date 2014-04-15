@@ -14,7 +14,11 @@
 ##############################################################################
 from __future__ import absolute_import, unicode_literals
 from mock import MagicMock
-from types import TupleType
+import sys
+if (sys.version_info < (3, )):
+    from types import TupleType as tt
+else:
+    tt = tuple  # lint:ok
 from unittest import TestCase
 from gs.form.postmultipart import post_multipart, Connection
 from gs.form.postmultipart import (HTTPSConnection as ph_HTTPSConnection,
@@ -22,7 +26,7 @@ from gs.form.postmultipart import (HTTPSConnection as ph_HTTPSConnection,
 from gs.form.httplib import HTTPSConnection, HTTPConnection
 
 
-class FauxResponse(TupleType):
+class FauxResponse(tt):
 
     @property
     def status(self):

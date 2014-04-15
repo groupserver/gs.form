@@ -20,6 +20,7 @@ from gs.form.test.post import TestPostMultipart
 
 testCases = (TestContentType, TestEncode, TestPostMultipart, )
 
+
 def load_tests(loader, tests, pattern):
     suite = TestSuite()
     for testClass in testCases:
