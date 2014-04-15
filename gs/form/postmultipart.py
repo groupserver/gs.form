@@ -12,25 +12,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from __future__ import unicode_literals
-from io import StringIO
-import httplib
-import mimetools
+from __future__ import absolute_import, unicode_literals
+from email.mime.multipart import MIMEMultipart
+from email.mime.nonmultipart import MIMENonMultipart
 import mimetypes
+from gs.core import to_ascii, to_unicode_or_bust
+from .httplib import HTTPSConnection, HTTPConnection
+UTF8 = 'utf-8'
 
 
 class Connection(object):
     '''A wrapper for the HTTP(S) connection'''
     def __init__(self, host, port=None, usessl=False):  # Port?
         if usessl:
-            self.connectionFactory = httplib.HTTPSConnection
+            self.connectionFactory = HTTPSConnection
         else:
-            self.connectionFactory = httplib.HTTPConnection            
+            self.connectionFactory = HTTPConnection
         self.host = self.connectionFactory(host)  # Port?
 
     def request(self, requestType, selector, body, headers):
         self.host.request(requestType, selector, body, headers)
-        
+
     def getresponse(self):
         retval = self.host.getresponse()
         return retval
@@ -38,17 +40,17 @@ class Connection(object):
 
 def post_multipart(host, selector, fields, files=[], usessl=False):
     """
-    Post fields and files to an http host as multipart/form-data.  
+    Post fields and files to an http host as multipart/form-data.
 
     Arguments
-    ``fields``: a sequence of (name, value) elements for regular form fields.  
+    ``fields``: a sequence of (name, value) elements for regular form fields.
     ``files``:  a sequence of (name, filename, value) elements for data to be
-                uploaded as files 
+                uploaded as files
 
     Returns the server's response page.
     """
     if type(fields) == dict:
-        f = fields.items()
+        f = list(fields.items())
     else:
         f = fields
     if type(f) not in (list, tuple):
@@ -74,26 +76,34 @@ def encode_multipart_formdata(fields, files):
     uploaded as files Return (content_type, body) ready for httplib.HTTP
     instance
     """
-    boundary = mimetools.choose_boundary()
-    buf = StringIO()
+
+    container = MIMEMultipart('form-data')
     for (key, value) in fields:
-        buf.write('--%s\r\n' % boundary)
-        buf.write('Content-Disposition: form-data; name="%s"' % key)
-        buf.write('\r\n\r\n' + value + '\r\n')
+        part = MIMENonMultipart('foo', 'bar')
+        k = to_ascii(key)
+        part['Content-Disposition'] = b'form-data; name="{0}"'.format(k)
+        data = to_unicode_or_bust(value).encode(UTF8)
+        part.set_payload(data)
+        del(part['Content-Type'])
+        del(part['MIME-Version'])
+        container.attach(part)
     for (key, filename, value) in files:
-        buf.write('--%s\r\n' % boundary)
-        buf.write('Content-Disposition: form-data; name="%s"; '
-                     'filename="%s"\r\n' % (key, filename))
-        buf.write('Content-Type: %s\r\n' % get_content_type(filename))
-        buf.write('\r\n%s\r\n' % value)
+        part = MIMENonMultipart('foo', 'bar')
+        k = to_ascii(key)
+        f = to_ascii(filename)
+        cd = b'form-data; name="{0}"; filename="{1}"'.format(k, f)
+        part['Content-Disposition'] = cd
+        part['Content-Type'] = get_content_type(filename)
+        part.set_payload(value)
+        del(part['Content-Type'])
+        del(part['MIME-Version'])
+        container.attach(part)
 
-    buf.write('--%s--\r\n\r\n' % boundary)
-    buf = buf.getvalue()
-
-    content_type = 'multipart/form-data; boundary=%s' % boundary
-
+    content_type = container['Content-Type']
+    del(container['MIME-Version'])
+    buf = container.as_string()
     return content_type, buf
 
 
 def get_content_type(filename):
-    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
+    return mimetypes.guess_type(filename)[0] or b'application/octet-stream'
