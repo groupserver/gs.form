@@ -24,8 +24,7 @@ requires = ['gs.core']
 if (sys.version_info < (3, 4)):
     requires = [
         'setuptools',
-        'mock',
-        'gs.core'
+        'gs.core',
         ]
 
 setup(name='gs.form',
@@ -59,6 +58,8 @@ setup(name='gs.form',
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
+    tests_require=['mock', ],
+    test_suite="gs.form.test.test_all",
     entry_points="""
     # -*- Entry points: -*-
     """,)
