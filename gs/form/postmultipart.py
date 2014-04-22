@@ -24,12 +24,12 @@ UTF8 = 'utf-8'
 
 class Connection(object):
     '''A wrapper for the HTTP(S) connection'''
-    def __init__(self, host, port=None, usessl=False):  # Port?
+    def __init__(self, host, port=None, usessl=False):
         if usessl:
             self.connectionFactory = HTTPSConnection
         else:
             self.connectionFactory = HTTPConnection
-        self.host = self.connectionFactory(host)  # Port?
+        self.host = self.connectionFactory(host, port)
 
     def request(self, requestType, selector, body, headers):
         self.host.request(requestType, selector, body, headers)
@@ -39,17 +39,16 @@ class Connection(object):
         return retval
 
 
-def post_multipart(host, selector, fields, files=[], usessl=False):
-    """
-    Post fields and files to an http host as multipart/form-data.
+def post_multipart(host, selector, fields, files=[], port=None, usessl=False):
+    """Post fields and files to an http host as multipart/form-data.
 
     Arguments
-    ``fields``: a sequence of (name, value) elements for regular form fields.
-    ``files``:  a sequence of (name, filename, value) elements for data to be
-                uploaded as files
+    ``fields``: a sequence of (name, value) 2-tuple elements for regular form
+                fields.
+    ``files``:  a sequence of (name, filename, value) 3-tuple elements for data
+                to be uploaded as files
 
-    Returns the server's response page.
-    """
+    Returns a 3-tuple: the reponse-status, reason, and data."""
     if type(fields) == dict:
         f = list(fields.items())
     else:
@@ -59,7 +58,7 @@ def post_multipart(host, selector, fields, files=[], usessl=False):
         msg = m.format(type(fields))
         raise ValueError(msg)
 
-    connection = Connection(host, usessl=usessl)
+    connection = Connection(host, port=port, usessl=usessl)
     content_type, body = encode_multipart_formdata(f, files)
     headers = {
         'User-Agent': 'gs.form',
