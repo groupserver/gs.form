@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-version = '1.0.0'
-release = True
+version = '2.1.0'
+release = False
 
 #-----------------------------------------------------------------------------#
 import sys
@@ -63,8 +63,9 @@ def get_version():
         else:
             version_string = "%s.dev%s-%s" % (version, datestring, globalid)
 
-    except (CommandError, ValueError, TypeError) as e:
-        print (e)
+    except (CommandError, ValueError, TypeError):
+        # --=mpj17=-- Usually because we are building out a source-egg, rather
+        # than from a Hg source-directory.
         version_string = parse_version_from_package()
 
     return version_string
