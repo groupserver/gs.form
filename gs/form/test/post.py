@@ -62,22 +62,37 @@ class TestPostMultipart(TestCase):
         connection = Connection('example.com')
         self.assertIsInstance(connection.host, HTTPConnection)
 
+    def test_connection_port_none(self):
+        'Test the creation of a connection, when the netloc has no port'
+        connection = Connection('example.com')
+        self.assertEqual(connection.host.port, 80)
+
+    def test_connection_port_odd(self):
+        'Test the creation of a connection when the port in the netlock is odd'
+        connection = Connection('example.com:1532')
+        self.assertEqual(connection.host.port, 1532)
+
     def test_tls_connection(self):
+        'Test the creation of a TLS (SSL) connection'
         tlsConnection = Connection('example.com', usessl=True)
         self.assertIsInstance(tlsConnection.host, HTTPSConnection)
 
     def test_post_multipart_resp(self):
-        retval = post_multipart('example.com', 'form.html', self.fields)
-        self.assertEqual(len(retval), len(self.fauxResponse))
+        'Test that the response from post_mulitpart is the right length'
+        r = post_multipart('example.com', 'form.html', self.fields)
+        self.assertEqual(len(r), len(self.fauxResponse))
 
     def test_post_multipart_resp_status(self):
-        retval = post_multipart('example.com', 'form.html', self.fields)
-        self.assertEqual(retval[0], self.fauxResponse.status)
+        'Test that the status from post_multipart is correct'
+        r = post_multipart('example.com', 'form.html', self.fields)
+        self.assertEqual(r[0], self.fauxResponse.status)
 
     def test_post_multipart_resp_reason(self):
-        retval = post_multipart('example.com', 'form.html', self.fields)
-        self.assertEqual(retval[1], self.fauxResponse.reason)
+        'Test that the "reason" from post_multipart is correct'
+        r = post_multipart('example.com', 'form.html', self.fields)
+        self.assertEqual(r[1], self.fauxResponse.reason)
 
     def test_post_multipart_resp_read(self):
-        retval = post_multipart('example.com', 'form.html', self.fields)
-        self.assertEqual(retval[2], self.fauxResponse.read())
+        'Test that the data returned from post_multipart is correct'
+        r = post_multipart('example.com', 'form.html', self.fields)
+        self.assertEqual(r[2], self.fauxResponse.read())
