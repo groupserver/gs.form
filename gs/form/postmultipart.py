@@ -24,14 +24,20 @@ UTF8 = 'utf-8'
 
 class Connection(object):
     '''A wrapper for the HTTP(S) connection'''
-    def __init__(self, host, port=None, usessl=False):
+    def __init__(self, netloc, usessl=False):
+        '''Initalise the connection
+
+:param str netloc: The netloc (``host`` or ``host:port``).
+:param bool usessl: ``True`` if TLS should be used.
+'''
         if usessl:
             self.connectionFactory = HTTPSConnection
         else:
             self.connectionFactory = HTTPConnection
-        self.host = self.connectionFactory(host, port)
+        self.host = self.connectionFactory(netloc)
 
     def request(self, requestType, selector, body, headers):
+        '''Make a request'''
         self.host.request(requestType, selector, body, headers)
 
     def getresponse(self):
@@ -39,26 +45,28 @@ class Connection(object):
         return retval
 
 
-def post_multipart(host, selector, fields, files=[], port=None, usessl=False):
-    """Post fields and files to an http host as multipart/form-data.
+def post_multipart(netloc, selector, fields, files=[], usessl=False):
+    """Post fields and files to an http host as ``multipart/form-data``.
 
-    Arguments
-    ``fields``: a sequence of (name, value) 2-tuple elements for regular form
-                fields.
-    ``files``:  a sequence of (name, filename, value) 3-tuple elements for data
-                to be uploaded as files
-
-    Returns a 3-tuple: the reponse-status, reason, and data."""
+:param str netloc: The netloc (``host`` or ``host:port``).
+:param str selector: The path to the form that will be posted to.
+:param list fields: A sequence of ``(name, value)`` 2-tuple elements for
+                    regular form fields.
+:param list files: A sequence of ``(name, filename, value)`` 3-tuple elements
+                   for data to be uploaded as files
+:param bool usessl: ``True`` if TLS should be used to communicate with the
+                    server.
+:return: A 3-tuple: the reponse-status, reason, and data."""
     if type(fields) == dict:
         f = list(fields.items())
     else:
         f = fields
-    if type(f) not in (list, tuple):
-        m = 'Fields must be a dict, tuple, or list, not "{0}".'
-        msg = m.format(type(fields))
-        raise ValueError(msg)
+    #if type(f) not in (list, tuple):
+    #    m = 'Fields must be a dict, tuple, or list, not "{0}".'
+    #    msg = m.format(type(fields))
+    #    raise ValueError(msg)
 
-    connection = Connection(host, port=port, usessl=usessl)
+    connection = Connection(netloc, usessl=usessl)
     content_type, body = encode_multipart_formdata(f, files)
     headers = {
         'User-Agent': 'gs.form',
