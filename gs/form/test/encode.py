@@ -13,6 +13,12 @@
 #
 ##############################################################################
 from __future__ import absolute_import, unicode_literals
+from cgi import FieldStorage
+import os
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO  # lint:ok
 from unittest import TestCase, main as unittest_main
 from gs.form.postmultipart import encode_multipart_formdata
 
@@ -57,6 +63,15 @@ class TestEncode(TestCase):
         filenames = ['filename="{}"'.format(f[1]) for f in self.files]
         for filename in filenames:
             self.assertIn(filename, data)
+
+    def test_parse(self):
+        'Test if cgi.FieldStorage can parse the data'
+        contentType, data = encode_multipart_formdata(self.fields, self.files)
+        d = StringIO(data)
+        hdrs = {'Content-Type': contentType}
+        os.environ['REQUEST_TYPE'] = 'POST'
+        FieldStorage(fp=d, headers=hdrs)
+        self.assertTrue(True)
 
 if __name__ == '__main__':
     unittest_main()
