@@ -35,7 +35,7 @@ if (sys.version_info < (3, 4)):
 
 setup(name='gs.form',
     version=version,
-    description="Core form support in GroupServer.",
+    description="Functions for posting data to forms.",
     long_description=long_description,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
