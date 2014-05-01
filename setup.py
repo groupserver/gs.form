@@ -63,6 +63,7 @@ setup(name='gs.form',
     include_package_data=True,
     zip_safe=False,
     install_requires=requires,
+    extras_require={'docs': ['Sphinx'], },
     tests_require=['mock', ],
     test_suite="gs.form.test.test_all",
     entry_points="""
