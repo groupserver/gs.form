@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+'POST data to a a page.'
 ##############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
@@ -37,10 +38,12 @@ class Connection(object):
         self.host = self.connectionFactory(netloc)
 
     def request(self, requestType, selector, body, headers):
-        '''Make a request'''
+        '''Make a request. Wraps :meth:`http.client.HTTPConnection.request`.'''
         self.host.request(requestType, selector, body, headers)
 
     def getresponse(self):
+        '''Make a  response.
+        Wraps :meth:`http.client.HTTPConnection.getresponse`.'''
         retval = self.host.getresponse()
         return retval
 
@@ -56,7 +59,21 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
                    for data to be uploaded as files
 :param bool usessl: ``True`` if TLS should be used to communicate with the
                     server.
-:return: A 3-tuple: the reponse-status, reason, and data."""
+:return: A 3-tuple: the reponse-status, reason, and data.
+
+**Example**:
+
+    Post three normal form fields (``parrot``, ``piranah``, and ``ethyl``) and
+    one file (the text file ``rule.txt``, sent as the ``unwritten`` form field)
+    to ``example.com`` on port ``2585``, using normal HTTP rather than TLS
+    (the default)::
+
+        fields = [('parrot', 'dead'), ('piranha', 'brother'),
+                  ('ethyl', 'frog')]
+        files = [('unwritten', 'rule.txt', 'This is a transgression.')]
+        r = post_multipart('example.com:2585', '/form.html', fields, files)
+        status, reason, data = r
+"""
     if type(fields) == dict:
         f = list(fields.items())
     else:
@@ -78,12 +95,15 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
 
 
 def encode_multipart_formdata(fields, files):
-    """
-    fields is a sequence of (name, value) elements for regular form fields.
-    files is a sequence of (name, filename, value) elements for data to be
-    uploaded as files Return (content_type, body) ready for httplib.HTTP
-    instance
-    """
+    """Encode the data into a multipart-document
+
+    :param list fields: A  sequence of ``(name, value)`` 2-tuple elements,
+                        for regular form fields.
+    :param list files: A sequence of ``(name, filename, value)`` 3-tuple
+                       elements for data to be uploaded as files
+    :return: ``(content_type, body)`` as a 2-tuple ready to be sent in a POST.
+    :rtype: ``tuple``
+"""
 
     container = MIMEMultipart('form-data')
     for (key, value) in fields:
@@ -113,4 +133,9 @@ def encode_multipart_formdata(fields, files):
 
 
 def get_content_type(filename):
+    '''Get the content type of a file
+
+    :param str filename: The name of the file.
+    :return: The MIME-type of the file, or ``application/octet-stream``.
+    :rtype: ``str``'''
     return mimetypes.guess_type(filename)[0] or 'application/octet-stream'

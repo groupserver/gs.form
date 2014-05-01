@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+'''Import the correct HTTPConnection and HTTPSConnection classes from Python,
+regardless of 2 or 3.'''
 ##############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
