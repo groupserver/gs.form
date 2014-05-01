@@ -89,6 +89,7 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
         'User-Agent': 'gs.form',
         'Content-Type': content_type
         }
+
     connection.request('POST', selector, body, headers)
     res = connection.getresponse()
     return res.status, res.reason, res.read()
@@ -126,9 +127,13 @@ def encode_multipart_formdata(fields, files):
         del(part['MIME-Version'])
         container.attach(part)
 
-    content_type = container['Content-Type']
+    # Drop the MIME-version header. Useless in forms
     del(container['MIME-Version'])
-    buf = container.as_string()
+    # Put the Content-type header on one line
+    buf = container.as_string().replace('\n', '', 1).strip()
+    # Grab the Content-type header
+    s = buf.split('\n')
+    content_type = s[0].split(': ')[1]
     return content_type, buf
 
 
