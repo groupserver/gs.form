@@ -30,7 +30,7 @@ class TestEncode(TestCase):
         self.fields = [('parrot', 'dead'), ('piranha', 'brother'),
                        ('ethyl', 'frog')]
         self.files = [('unwritten', 'rule.txt', 'This is a transgression.'),
-                      ('ethyl', 'frog.jpg', 'Tonight we look at violence.')]
+                      ('boot', 'in.jpg', 'Tonight we look at violence.')]
 
     def test_encode_multipart_form_data_retval(self):
         '''Test that we get a 2-tuple back from the encode_multipart
@@ -68,10 +68,23 @@ class TestEncode(TestCase):
         'Test if cgi.FieldStorage can parse the data'
         contentType, data = encode_multipart_formdata(self.fields, self.files)
         d = StringIO(data)
-        hdrs = {'Content-Type': contentType}
-        os.environ['REQUEST_TYPE'] = 'POST'
-        FieldStorage(fp=d, headers=hdrs)
-        self.assertTrue(True)
+        # --=mpj17=-- Pretend we does be a web server, weeee!
+        os.environ['CONTENT_TYPE'] = contentType
+        os.environ['REQUEST_METHOD'] = 'POST'
+        # Parse the data
+        fs = FieldStorage(fp=d, environ=os.environ)
+
+        allFields = self.fields + self.files
+        self.assertEqual(len(allFields), len(fs.list))
+        for fieldId, fieldValue in self.fields:
+            self.assertIn(fieldId, fs)
+            self.assertEqual(fieldId, fs[fieldId].name)
+            self.assertEqual(fieldValue, fs[fieldId].value)
+        for fileId, filename, fileValue in self.files:
+            self.assertIn(fileId, fs)
+            self.assertEqual(fileId, fs[fileId].name)
+            self.assertEqual(filename, fs[fileId].filename)
+            self.assertEqual(fileValue, fs[fileId].value)
 
 if __name__ == '__main__':
     unittest_main()
