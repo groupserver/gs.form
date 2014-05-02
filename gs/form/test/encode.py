@@ -16,9 +16,12 @@ from __future__ import absolute_import, unicode_literals
 from cgi import FieldStorage
 import os
 try:
+    # Python 2
     from StringIO import StringIO
 except ImportError:
-    from io import StringIO  # lint:ok
+    # Python 3; forgive me.
+    StringIO = None  # lint:ok
+    from io import BytesIO
 from unittest import TestCase, main as unittest_main
 from gs.form.postmultipart import encode_multipart_formdata
 
@@ -67,24 +70,46 @@ class TestEncode(TestCase):
     def test_parse(self):
         'Test if cgi.FieldStorage can parse the data'
         contentType, data = encode_multipart_formdata(self.fields, self.files)
-        d = StringIO(data)
-        # --=mpj17=-- Pretend we does be a web server, weeee!
+
+        # --=mpj17=-- Marshall a data into an HTTP-like form, because it is
+        # necesseary to pretend we does be a web server, weeee!
+        # Replace newlines with carrage-return newlines because we does be a
+        # webserver.
+        bd = data.replace('\n', '\r\n')
+        if StringIO:
+            d = StringIO(bd)
+        else:
+            # Python 3 requires a bytes IO. Bless.
+            d = BytesIO(bd.encode('utf-8'))
+        # Set the environment variables, because we does be a webserver.
+        # These are translated to "headers" by cgi.FieldStorage
         os.environ['CONTENT_TYPE'] = contentType
         os.environ['REQUEST_METHOD'] = 'POST'
+        # --=mpj17=-- An entire day was spent finding out that the Python 3
+        # cgi.FieldStorage will have horrible pustular errors, with the wrong
+        # number of fields, and the field names being totally out of wack. (It
+        # comes down to the cgi.FieldStorage.length and cgi.FieldStorage.limit
+        # attributes.
+        os.environ['CONTENT_LENGTH'] = '{0}'.format(len(bd.encode('utf-8')))
+
         # Parse the data
         fs = FieldStorage(fp=d, environ=os.environ)
 
         allFields = self.fields + self.files
-        self.assertEqual(len(allFields), len(fs.list))
+        self.assertEqual(len(allFields), len(fs))
+
+        # Test the normal fields
         for fieldId, fieldValue in self.fields:
             self.assertIn(fieldId, fs)
             self.assertEqual(fieldId, fs[fieldId].name)
             self.assertEqual(fieldValue, fs[fieldId].value)
+
+        # Test the files
         for fileId, filename, fileValue in self.files:
             self.assertIn(fileId, fs)
             self.assertEqual(fileId, fs[fileId].name)
             self.assertEqual(filename, fs[fileId].filename)
-            self.assertEqual(fileValue, fs[fileId].value)
+            self.assertEqual(fileValue, fs[fileId].value.decode('utf-8'))
 
 if __name__ == '__main__':
     unittest_main()
