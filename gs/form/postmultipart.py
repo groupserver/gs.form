@@ -105,7 +105,6 @@ def encode_multipart_formdata(fields, files):
     :return: ``(content_type, body)`` as a 2-tuple ready to be sent in a POST.
     :rtype: ``tuple``
 """
-
     container = MIMEMultipart('form-data')
     for (key, value) in fields:
         part = MIMENonMultipart('foo', 'bar')
@@ -130,11 +129,13 @@ def encode_multipart_formdata(fields, files):
     # Drop the MIME-version header. Useless in forms
     del(container['MIME-Version'])
     # Put the Content-type header on one line
-    buf = container.as_string().replace('\n', '', 1).strip()
+    buf = container.as_string()
     # Grab the Content-type header
-    s = buf.split('\n')
-    content_type = s[0].split(': ')[1]
-    return content_type, buf
+    splitBuf = buf.replace('\n', '', 1).strip().split('\n')
+    content_type = splitBuf[0].split(': ')[1]
+    # Drop the content-type header from the data
+    rbuf = '\n'.join(splitBuf[1:]).strip() + '\n\n'
+    return content_type, rbuf
 
 
 def get_content_type(filename):
