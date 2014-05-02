@@ -83,28 +83,30 @@ class TestEncode(TestCase):
             d = BytesIO(bd.encode('utf-8'))
         # Set the environment variables, because we does be a webserver.
         # These are translated to "headers" by cgi.FieldStorage
-        os.environ['CONTENT_TYPE'] = contentType
+        os.environ['CONTENT_TYPE'] = contentType  # < encode_multipart_formdata
         os.environ['REQUEST_METHOD'] = 'POST'
-        # --=mpj17=-- An entire day was spent finding out that the Python 3
-        # cgi.FieldStorage will have horrible pustular errors, with the wrong
-        # number of fields, and the field names being totally out of wack. (It
-        # comes down to the cgi.FieldStorage.length and cgi.FieldStorage.limit
-        # attributes.
+        # --=mpj17=-- Set the content length. An entire day was spent finding
+        # out that if we omit doing this then the Python 3 cgi.FieldStorage
+        # will have horrible pustular errors, with the wrong number of fields,
+        # and the field names being totally out of wack. (It comes down to the
+        # odd interaction with the cgi.FieldStorage.length and
+        # cgi.FieldStorage.limit attributes.)
         os.environ['CONTENT_LENGTH'] = '{0}'.format(len(bd.encode('utf-8')))
 
         # Parse the data
         fs = FieldStorage(fp=d, environ=os.environ)
 
+        # Test that we have the correct number of fields
         allFields = self.fields + self.files
         self.assertEqual(len(allFields), len(fs))
 
-        # Test the normal fields
+        # Test the normal fields have the correct IDs and values
         for fieldId, fieldValue in self.fields:
             self.assertIn(fieldId, fs)
             self.assertEqual(fieldId, fs[fieldId].name)
             self.assertEqual(fieldValue, fs[fieldId].value)
 
-        # Test the files
+        # Test the files have the correct IDs, filenames, and values
         for fileId, filename, fileValue in self.files:
             self.assertIn(fileId, fs)
             self.assertEqual(fileId, fs[fileId].name)
