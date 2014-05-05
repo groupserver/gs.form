@@ -1,75 +1,49 @@
 ===========
 ``gs.form``
 ===========
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Core form handling for GroupServer
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Submit a form to a Web server using a ``POST``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Author: `Michael JasonSmith`_
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2013-08-27
+:Date: 2014-05-05
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
-  `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
+  `Creative Commons Attribution-Share Alike 4.0 International License`_
   by `OnlineGroups.Net`_.
 
 Introduction
 ============
 
-This product contains the core functions and classes for dealing with forms
-in GroupServer_. For the most part it consists of the post_multipart_
-utility, for posting data to a form.
+This product contains the core functions and classes for making
+HTTP ``POST`` requests to send data to forms. For the most part
+it consists of the `post_multipart`_ utility, for posting data to
+a form.
 
-The ``gs.content.form`` module supplies the handling for the
-user-interface [#contentForm]_.
+While originally written for GroupServer_, there is nothing
+specific to GroupServer in this product.
 
 ``post_multipart``
 ==================
 
-The ``gs.content.form.post_multipart`` function is used to post data to a
-form.
-
-Synopsis
---------
-
-::
+The ``gs.form.post_multipart`` function is used to post data to a
+form::
 
   post_multipart(host, selector, fields, files=[], usessl=False)
 
-Arguments
----------
-
-``host``:
-  The HTTP host to connect to.
-
-``selector``:
-  The page that processes the form.
-
-``fields``:
-  The list of fields and the values to post. It is either
-
-  * A dictionary of  the form (``'formField': value``), or
-
-  * A list (or tuple) of 2-tuples of the form ``('formField', value)``.
-
-  The **submit button** is also passed through as a field. Normally the
-  ``value`` is set to the label of the button.
-
-``files``:
-  An optional list of files as 3-tuples: ``('formField', fileName, fileData)``.
-
-``usessl``:
-  Whether to use SSL to communicate to the server.
-
-Returns
--------
-
-A 3-tuple of ``status, reason, data``.
+See the documentation for more on how to use this function.
 
 Acknowledgements
 ================
 
-The post_multipart_ code was based on `a Python recipe by Wade Leftwich`_.
+The post_multipart_ code was based on `a Python recipe by Wade
+Leftwich`_. It was changed to use ``email.multipart`` to create
+the multipart document that is sent using a ``POST``.
+
+The Python standard library currently lacks a module for making a
+``POST`` to a Web server. `Issue 3244`_ tracks the inclusion of a
+module into the standard library.
 
 
 Resources
@@ -83,10 +57,7 @@ Resources
 .. _GroupServer.org: http://groupserver.org/
 .. _OnlineGroups.Net: https://onlinegroups.net
 .. _Michael JasonSmith: http://groupserver.org/p/mpj17
-.. _Creative Commons Attribution-Share Alike 3.0 New Zealand License:
-   http://creativecommons.org/licenses/by-sa/3.0/nz/
+.. _Creative Commons Attribution-Share Alike 4.0 International License:
+    http://creativecommons.org/licenses/by-sa/4.0/
 .. _a Python recipe by Wade Leftwich: http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/
-
-.. [#contentForm] See 
-                  <https://source.iopen.net/groupserver/gs.content.form/summary>
-
+.. _Issue 3244: http://bugs.python.org/issue3244
