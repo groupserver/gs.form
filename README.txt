@@ -49,6 +49,7 @@ module into the standard library.
 Resources
 =========
 
+- Documentation: http://gsform.readthedocs.org/
 - Code repository: https://source.iopen.net/groupserver/gs.form
 - Questions and comments to http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver

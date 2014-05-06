@@ -4,4 +4,3 @@ include version.py
 include *.txt
 include tox.ini
 global-exclude *.pyc
-prune gs/form/test/__pycache__/
