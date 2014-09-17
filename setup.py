@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from setuptools import setup, find_packages
 import codecs
 import os
@@ -20,7 +20,8 @@ from version import get_version
 
 with codecs.open('README.rst', encoding='utf-8') as f:
     long_description = f.read()
-with codecs.open(os.path.join("docs", "HISTORY.txt"), encoding='utf-8') as f:
+with codecs.open(os.path.join("docs", "HISTORY.rst"),
+                 encoding='utf-8') as f:
     long_description += '\n' + f.read()
 
 version = get_version()
@@ -33,7 +34,8 @@ if (sys.version_info < (3, 4)):
         'gs.core',
         ]
 
-setup(name='gs.form',
+setup(
+    name='gs.form',
     version=version,
     description="Functions for posting data to forms.",
     long_description=long_description,
@@ -53,7 +55,7 @@ setup(name='gs.form',
         "Programming Language :: Python :: Implementation :: PyPy",
         'Topic :: Internet :: WWW/HTTP',
         "Topic :: Software Development :: Libraries :: Python Modules",
-      ],
+    ],
     keywords='http, post, POST, form, web form',
     author='Michael JasonSmith',
     author_email='mpj17@onlinegroups.net',
