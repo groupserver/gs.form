@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-'POST data to a a page.'
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -12,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 from email.mime.multipart import MIMEMultipart
 from email.mime.nonmultipart import MIMENonMultipart
@@ -38,7 +37,8 @@ class Connection(object):
         self.host = self.connectionFactory(netloc)
 
     def request(self, requestType, selector, body, headers):
-        '''Make a request. Wraps :meth:`http.client.HTTPConnection.request`.'''
+        '''Make a request. Wraps
+:meth:`http.client.HTTPConnection.request`.'''
         self.host.request(requestType, selector, body, headers)
 
     def getresponse(self):
@@ -55,18 +55,18 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
 :param str selector: The path to the form that will be posted to.
 :param list fields: A sequence of ``(name, value)`` 2-tuple elements for
                     regular form fields.
-:param list files: A sequence of ``(name, filename, value)`` 3-tuple elements
-                   for data to be uploaded as files
+:param list files: A sequence of ``(name, filename, value)`` 3-tuple
+                   elements for data to be uploaded as files
 :param bool usessl: ``True`` if TLS should be used to communicate with the
                     server.
 :return: A 3-tuple: the reponse-status, reason, and data.
 
 **Example**:
 
-    Post three normal form fields (``parrot``, ``piranah``, and ``ethyl``) and
-    one file (the text file ``rule.txt``, sent as the ``unwritten`` form field)
-    to ``example.com`` on port ``2585``, using normal HTTP rather than TLS
-    (the default)::
+    Post three normal form fields (``parrot``, ``piranah``, and ``ethyl``)
+    and one file (the text file ``rule.txt``, sent as the ``unwritten`` form
+    field) to ``example.com`` on port ``2585``, using normal HTTP rather
+    than TLS (the default)::
 
         fields = [('parrot', 'dead'), ('piranha', 'brother'),
                   ('ethyl', 'frog')]
@@ -102,7 +102,8 @@ def encode_multipart_formdata(fields, files):
                         for regular form fields.
     :param list files: A sequence of ``(name, filename, value)`` 3-tuple
                        elements for data to be uploaded as files
-    :return: ``(content_type, body)`` as a 2-tuple ready to be sent in a POST.
+    :return: ``(content_type, body)`` as a 2-tuple ready to be sent in a
+             POST.
     :rtype: ``tuple``
 """
     container = MIMEMultipart('form-data')
