@@ -1,6 +1,15 @@
 Changelog
 =========
 
+2.2.1 (2015-04-15)
+------------------
+
+* Fixing a potential error due to `using a list as a default
+  argument`_
+
+.. using a list as a default argument:
+   http://effbot.org/zone/default-values.htm
+
 2.2.0 (2014-05-05)
 ------------------
 
