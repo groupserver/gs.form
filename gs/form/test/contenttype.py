@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
 # Copyright © 2014 OnlineGroups.net and Contributors.
 # All Rights Reserved.
@@ -11,7 +11,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
+############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestCase
 from gs.form.postmultipart import get_content_type
@@ -26,17 +26,17 @@ class TestContentType(TestCase):
         self.assertEqual(ct, expectedType)
 
     def test_get_content_type_txt(self):
-        '''Test the function that guesses the content type of a text file.'''
+        'Test the function that guesses the content type of a text file.'
         self.content_type_test('foo.txt', 'text/plain')
 
     def test_get_content_type_jpg(self):
-        '''Test the function that guesses the content type of a JPEG file.'''
+        'Test the function that guesses the content type of a JPEG file.'
         self.content_type_test('foo.jpg', 'image/jpeg')
 
     def test_get_content_type_mpg(self):
-        '''Test the function that guesses the content type of a MPEG file.'''
+        'Test the function that guesses the content type of a MPEG file.'
         self.content_type_test('foo.mpg', 'video/mpeg')
 
     def test_get_content_type_bar(self):
-        '''Test the function that guesses the content type of a odd file.'''
+        'Test the function that guesses the content type of a odd file.'
         self.content_type_test('foo.bar', 'application/octet-stream')
