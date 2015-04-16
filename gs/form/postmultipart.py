@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -48,7 +48,7 @@ class Connection(object):
         return retval
 
 
-def post_multipart(netloc, selector, fields, files=[], usessl=False):
+def post_multipart(netloc, selector, fields, files=None, usessl=False):
     """Post fields and files to an http host as ``multipart/form-data``.
 
 :param str netloc: The netloc (``host`` or ``host:port``).
@@ -61,7 +61,7 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
                     server.
 :return: A 3-tuple: the reponse-status, reason, and data.
 
-**Example**:
+:Example:
 
     Post three normal form fields (``parrot``, ``piranah``, and ``ethyl``)
     and one file (the text file ``rule.txt``, sent as the ``unwritten`` form
@@ -74,6 +74,8 @@ def post_multipart(netloc, selector, fields, files=[], usessl=False):
         r = post_multipart('example.com:2585', '/form.html', fields, files)
         status, reason, data = r
 """
+    if files is None:
+        files = []
     if type(fields) == dict:
         f = list(fields.items())
     else:
