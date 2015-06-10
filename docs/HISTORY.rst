@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.3.0 (2015-06-10)
+------------------
+
+* Dealing with 301 redirects, closing `Issue 4162`_
+
+.._ Issue 4162: https://redmine.iopen.net/issues/4162
+
 2.2.1 (2015-04-15)
 ------------------
 
@@ -42,3 +49,5 @@ Changelog
 * Added ``post_multipart`` to the module
 * Moved the user-interface code to ``gs.content.form``
 * Renamed this module ``gs.form``.
+
+..  LocalWords:  Changelog

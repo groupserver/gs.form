@@ -7,7 +7,7 @@ Submit a form to a Web server using a ``POST``
 
 :Author: `Michael JasonSmith`_
 :Contact: Michael JasonSmith <mpj17@onlinegroups.net>
-:Date: 2014-05-05
+:Date: 2015-06-10
 :Organization: `GroupServer.org`_
 :Copyright: This document is licensed under a
   `Creative Commons Attribution-Share Alike 4.0 International License`_
@@ -51,7 +51,8 @@ Resources
 
 - Documentation: http://gsform.readthedocs.org/
 - Code repository: https://source.iopen.net/groupserver/gs.form
-- Questions and comments to http://groupserver.org/groups/development
+- Questions and comments to
+  http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 
 .. _GroupServer: http://groupserver.org/
