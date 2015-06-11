@@ -27,12 +27,9 @@ with codecs.open(os.path.join("docs", "HISTORY.rst"),
 version = get_version()
 
 # The requirements dance
-requires = ['gs.core']
+requires = ['requests', 'gs.core']
 if (sys.version_info < (3, 4)):
-    requires = [
-        'setuptools',
-        'gs.core',
-        ]
+    requires.append('setuptools')
 
 setup(
     name='gs.form',

@@ -16,7 +16,9 @@ from __future__ import absolute_import, unicode_literals
 from email.mime.multipart import MIMEMultipart
 from email.mime.nonmultipart import MIMENonMultipart
 from email.header import Header
+from io import BytesIO
 import mimetypes
+import requests
 from gs.core import to_unicode_or_bust
 from .httplib import HTTPSConnection, HTTPConnection
 UTF8 = 'utf-8'
@@ -74,27 +76,20 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
         r = post_multipart('example.com:2585', '/form.html', fields, files)
         status, reason, data = r
 """
-    if files is None:
-        files = []
-    if type(fields) == dict:
-        f = list(fields.items())
-    else:
-        f = fields
-    #if type(f) not in (list, tuple):
-    #    m = 'Fields must be a dict, tuple, or list, not "{0}".'
-    #    msg = m.format(type(fields))
-    #    raise ValueError(msg)
+    u = '{0}{1}'.format(netloc, selector)
+    d = dict(fields)
+    f = files_to_dict(files)
+    res = requests.post(u, data=d, files=f, timeout=4*60,
+                        allow_redirects=True, verify=False, stream=False)
+    retval = (res.status_code, res.reason, res.text)
+    # res.status, res.reason, res.read()
+    return retval
 
-    connection = Connection(netloc, usessl=usessl)
-    content_type, body = encode_multipart_formdata(f, files)
-    headers = {
-        'User-Agent': 'gs.form',
-        'Content-Type': content_type
-        }
 
-    connection.request('POST', selector, body, headers)
-    res = connection.getresponse()
-    return res.status, res.reason, res.read()
+def files_to_dict(files):
+    r = [(data[0], (data[1], BytesIO(data[2]))) for data in files]
+    retval = dict(r)
+    return retval
 
 
 def encode_multipart_formdata(fields, files):
