@@ -22,4 +22,13 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+Resources
+=========
+
+- Documentation: http://groupserver.rtfd.org/projects/gsform/
+- Code repository: https://github.com/groupserver/gs.form
+- Questions and comments to
+  http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
 .. _GroupServer: http://groupserver.org/

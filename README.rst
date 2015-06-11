@@ -45,12 +45,11 @@ The Python standard library currently lacks a module for making a
 ``POST`` to a Web server. `Issue 3244`_ tracks the inclusion of a
 module into the standard library.
 
-
 Resources
 =========
 
-- Documentation: http://gsform.readthedocs.org/
-- Code repository: https://source.iopen.net/groupserver/gs.form
+- Documentation: http://groupserver.rtfd.org/projects/gsform/
+- Code repository: https://github.com/groupserver/gs.form
 - Questions and comments to
   http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
