@@ -60,7 +60,7 @@ def files_to_dict(files):
     if files is not None:
         retval = {}
         for fileInfo in files:
-            name, filename, d = fileInfo
+            fieldName, filename, d = fileInfo
             data = BytesIO(d) if type(d) == BYTES_TYPE else StringIO(d)
-            retval[name] = (filename, data)
+            retval[fieldName] = (filename, data)
     return retval
