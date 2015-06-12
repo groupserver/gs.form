@@ -13,10 +13,14 @@
 #
 ############################################################################
 from __future__ import absolute_import, unicode_literals, print_function
+from collections import namedtuple
 from io import BytesIO, StringIO
 import sys
 import requests
 BYTES_TYPE = str if sys.version_info < (3, ) else bytes
+
+
+Response = namedtuple('response', ['status', 'reason', 'text'])
 
 
 def post_multipart(netloc, selector, fields, files=None, usessl=False):
@@ -51,7 +55,7 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
     f = files_to_dict(files)
     res = requests.post(u, data=d, files=f, timeout=4*60,
                         allow_redirects=True, verify=False, stream=False)
-    retval = (res.status_code, res.reason, res.text)
+    retval = Response(res.status_code, res.reason, res.text)
     return retval
 
 
