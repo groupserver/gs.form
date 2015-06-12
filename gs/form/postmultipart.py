@@ -20,7 +20,21 @@ import requests
 BYTES_TYPE = str if sys.version_info < (3, ) else bytes
 
 
-Response = namedtuple('response', ['status', 'reason', 'text'])
+Response = namedtuple('Response', ['status', 'reason', 'text'])
+"""Response from the server
+
+.. attribute:: status
+
+    The status code
+
+.. attribute:: reason
+
+    The short reason for the staus
+
+.. attribute:: text
+
+    The text of the document returned by the server.
+"""
 
 
 def post_multipart(netloc, selector, fields, files=None, usessl=False):
@@ -34,7 +48,8 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
                    elements for data to be uploaded as files
 :param bool usessl: ``True`` if TLS should be used to communicate with the
                     server.
-:return: A 3-tuple: the reponse-status, reason, and data.
+:return: The reponse-status
+:rtype: :class:`gs.form.Response`
 
 :Example:
 
@@ -47,7 +62,7 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
                   ('ethyl', 'frog')]
         files = [('unwritten', 'rule.txt', 'This is a transgression.')]
         r = post_multipart('example.com:2585', '/form.html', fields, files)
-        status, reason, data = r
+        status, reason, text = r
 """
     protocol = 'https' if usessl else 'http'
     u = '{0}://{1}{2}'.format(protocol, netloc, selector)
@@ -60,6 +75,16 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
 
 
 def files_to_dict(files):
+    '''Turn a list of file-info tuples into a dict for requests.post
+
+:param list files: A list of 3-tuples ``(field name, filename, data)``
+:returns: A dictionary of files.
+:rtype: dict
+
+The field names are returned as keys, and the file-data is represented as
+2-tuples: filename, file. The data is converted from a string (bytes or
+Unicode) to either a :class:`io.BytesIO` or :class:`io.StringIO`.
+'''
     retval = None
     if files is not None:
         retval = {}

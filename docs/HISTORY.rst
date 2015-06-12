@@ -1,12 +1,12 @@
 Changelog
 =========
 
-2.3.0 (2015-06-10)
+3.0.0 (2015-06-12)
 ------------------
 
 * Dealing with 301 redirects, closing `Issue 4162`_
 
-.._ Issue 4162: https://redmine.iopen.net/issues/4162
+.. _Issue 4162: https://redmine.iopen.net/issues/4162
 
 2.2.1 (2015-04-15)
 ------------------
@@ -14,7 +14,7 @@ Changelog
 * Fixing a potential error due to `using a list as a default
   argument`_
 
-.. using a list as a default argument:
+.. _using a list as a default argument:
    http://effbot.org/zone/default-values.htm
 
 2.2.0 (2014-05-05)

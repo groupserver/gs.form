@@ -16,23 +16,12 @@ Submit a form to a Web server using a ``POST``
 Introduction
 ============
 
-This product contains the core functions and classes for making
-HTTP ``POST`` requests to send data to forms. For the most part
-it consists of the `post_multipart`_ utility, for posting data to
-a form.
-
-While originally written for GroupServer_, there is nothing
-specific to GroupServer in this product.
-
-``post_multipart``
-==================
-
-The ``gs.form.post_multipart`` function is used to post data to a
-form::
-
-  post_multipart(host, selector, fields, files=[], usessl=False)
-
-See the documentation for more on how to use this function.
+This package provides a useful way of pushing data to a server by
+making a ``POST`` to a form. While originally written for
+GroupServer_, there is nothing specific to GroupServer in this
+product. Mostly it is a light facade around the ``requests``
+library <http://requests.readthedocs.org>. Use ``requests``
+instead of this module.
 
 Acknowledgements
 ================
@@ -40,10 +29,6 @@ Acknowledgements
 The post_multipart_ code was based on `a Python recipe by Wade
 Leftwich`_. It was changed to use ``email.multipart`` to create
 the multipart document that is sent using a ``POST``.
-
-The Python standard library currently lacks a module for making a
-``POST`` to a Web server. `Issue 3244`_ tracks the inclusion of a
-module into the standard library.
 
 Resources
 =========
@@ -61,4 +46,3 @@ Resources
 .. _Creative Commons Attribution-Share Alike 4.0 International License:
     http://creativecommons.org/licenses/by-sa/4.0/
 .. _a Python recipe by Wade Leftwich: http://code.activestate.com/recipes/146306-http-client-to-post-using-multipartform-data/
-.. _Issue 3244: http://bugs.python.org/issue3244

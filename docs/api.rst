@@ -1,19 +1,12 @@
 :mod:`gs.form` API Reference
 ============================
 
-The package exports the following API symbol.
+The package exports the following API symbols.
 
 .. autofunction:: gs.form.post_multipart
+.. autoclass:: gs.form.Response
 
 Internals
 ---------
 
-In addition to the :func:`post_multipart` function, the following
-are used internally.
-
-.. autoclass:: gs.form.postmultipart.Connection
-   :members:
-
-.. autofunction:: gs.form.postmultipart.encode_multipart_formdata
-
-.. autofunction:: gs.form.postmultipart.get_content_type
+.. autofunction:: gs.form.postmultipart.files_to_dict
