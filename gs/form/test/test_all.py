@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ############################################################################
 #
-# Copyright © 2014 OnlineGroups.net and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -14,9 +14,9 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from unittest import TestSuite, main as unittest_main
-from gs.form.test.post import TestPostMultipart
+from gs.form.test.post import TestPostMultipart, TestFilesToDict
 
-testCases = (TestPostMultipart, )
+testCases = (TestPostMultipart, TestFilesToDict, )
 
 
 def load_tests(loader, tests, pattern):
