@@ -70,6 +70,9 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
     f = files_to_dict(files)
     res = requests.post(u, data=d, files=f, timeout=4*60,
                         allow_redirects=True, verify=False, stream=False)
+    if res.url != u:  # Redirect
+        res = requests.post(res.url, data=d, files=f, timeout=4*60,
+                            allow_redirects=True, verify=False, stream=False)
     retval = Response(res.status_code, res.reason, res.text)
     return retval
 
