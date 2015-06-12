@@ -12,42 +12,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ############################################################################
-from __future__ import absolute_import, unicode_literals
-from email.mime.multipart import MIMEMultipart
-from email.mime.nonmultipart import MIMENonMultipart
-from email.header import Header
-from io import BytesIO
-import mimetypes
+from __future__ import absolute_import, unicode_literals, print_function
+from io import BytesIO, StringIO
+import sys
 import requests
-from gs.core import to_unicode_or_bust
-from .httplib import HTTPSConnection, HTTPConnection
-UTF8 = 'utf-8'
-
-
-class Connection(object):
-    '''A wrapper for the HTTP(S) connection'''
-    def __init__(self, netloc, usessl=False):
-        '''Initalise the connection
-
-:param str netloc: The netloc (``host`` or ``host:port``).
-:param bool usessl: ``True`` if TLS should be used.
-'''
-        if usessl:
-            self.connectionFactory = HTTPSConnection
-        else:
-            self.connectionFactory = HTTPConnection
-        self.host = self.connectionFactory(netloc)
-
-    def request(self, requestType, selector, body, headers):
-        '''Make a request. Wraps
-:meth:`http.client.HTTPConnection.request`.'''
-        self.host.request(requestType, selector, body, headers)
-
-    def getresponse(self):
-        '''Make a  response.
-        Wraps :meth:`http.client.HTTPConnection.getresponse`.'''
-        retval = self.host.getresponse()
-        return retval
+BYTES_TYPE = str if sys.version_info < (3, ) else bytes
 
 
 def post_multipart(netloc, selector, fields, files=None, usessl=False):
@@ -76,70 +45,22 @@ def post_multipart(netloc, selector, fields, files=None, usessl=False):
         r = post_multipart('example.com:2585', '/form.html', fields, files)
         status, reason, data = r
 """
-    u = '{0}{1}'.format(netloc, selector)
+    protocol = 'https' if usessl else 'http'
+    u = '{0}://{1}{2}'.format(protocol, netloc, selector)
     d = dict(fields)
     f = files_to_dict(files)
     res = requests.post(u, data=d, files=f, timeout=4*60,
                         allow_redirects=True, verify=False, stream=False)
     retval = (res.status_code, res.reason, res.text)
-    # res.status, res.reason, res.read()
     return retval
 
 
 def files_to_dict(files):
-    r = [(data[0], (data[1], BytesIO(data[2]))) for data in files]
-    retval = dict(r)
+    retval = None
+    if files is not None:
+        retval = {}
+        for fileInfo in files:
+            name, filename, d = fileInfo
+            data = BytesIO(d) if type(d) == BYTES_TYPE else StringIO(d)
+            retval[name] = (filename, data)
     return retval
-
-
-def encode_multipart_formdata(fields, files):
-    """Encode the data into a multipart-document
-
-    :param list fields: A  sequence of ``(name, value)`` 2-tuple elements,
-                        for regular form fields.
-    :param list files: A sequence of ``(name, filename, value)`` 3-tuple
-                       elements for data to be uploaded as files
-    :return: ``(content_type, body)`` as a 2-tuple ready to be sent in a
-             POST.
-    :rtype: ``tuple``
-"""
-    container = MIMEMultipart('form-data')
-    for (key, value) in fields:
-        part = MIMENonMultipart('foo', 'bar')
-        part['Content-Disposition'] = Header('form-data').encode()
-        part.set_param('name', key, 'Content-Disposition')
-        data = to_unicode_or_bust(value).encode(UTF8)
-        part.set_payload(data)
-        del(part['Content-Type'])
-        del(part['MIME-Version'])
-        container.attach(part)
-    for (key, filename, value) in files:
-        part = MIMENonMultipart('foo', 'bar')
-        part['Content-Disposition'] = Header('form-data').encode()
-        part.set_param('name', key, 'Content-Disposition')
-        part.set_param('filename', filename, 'Content-Disposition')
-        part['Content-Type'] = Header(get_content_type(filename)).encode()
-        part.set_payload(value)
-        del(part['Content-Type'])
-        del(part['MIME-Version'])
-        container.attach(part)
-
-    # Drop the MIME-version header. Useless in forms
-    del(container['MIME-Version'])
-    # Put the Content-type header on one line
-    buf = container.as_string()
-    # Grab the Content-type header
-    splitBuf = buf.replace('\n', '', 1).strip().split('\n')
-    content_type = splitBuf[0].split(': ')[1]
-    # Drop the content-type header from the data
-    rbuf = '\n'.join(splitBuf[1:]).strip() + '\n\n'
-    return content_type, rbuf
-
-
-def get_content_type(filename):
-    '''Get the content type of a file
-
-    :param str filename: The name of the file.
-    :return: The MIME-type of the file, or ``application/octet-stream``.
-    :rtype: ``str``'''
-    return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
