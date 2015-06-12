@@ -88,7 +88,7 @@ class TestFilesToDict(TestCase):
 
     def assertFile(self, expected, v):
         eFieldName, eFilename, eData = expected
-        vFieldName = v.keys()[0]
+        vFieldName = list(v.keys())[0]
         self.assertEqual(
             eFieldName, vFieldName,
             'Expected key name "{0}", got "{1}"'.format(eFieldName, vFieldName))
