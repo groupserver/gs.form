@@ -26,9 +26,7 @@ with codecs.open(os.path.join("docs", "HISTORY.rst"),
 
 version = get_version()
 
-# The requirements dance
-requires = ['requests[security]',
-            'gs.core']
+requires = ['gs.core', 'requests']
 if (sys.version_info < (3, 4)):
     requires.append('setuptools')
 
