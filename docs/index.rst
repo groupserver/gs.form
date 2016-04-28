@@ -5,7 +5,7 @@ This package provides a useful way of pushing data to a server by
 making a ``POST`` to a form. While originally written for
 GroupServer_, there is nothing specific to GroupServer in this
 product. Mostly it is a light facade around the :mod:`requests`
-library, which you should use <http://requests.readthedocs.org>.
+library, which you should use <http://requests.readthedocs.io>.
 
 Contents:
 
